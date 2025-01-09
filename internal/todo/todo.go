@@ -1,20 +1,33 @@
 package todo
 
-type Service struct {
-	todos []string
+import "errors"
 
+type Service struct {
+	todos []Item
+
+}
+
+type Item struct {
+   Task string 
+   Status string
 }
 
 func NewService() *Service {
 	return &Service{
-		todos: make([]string, 0),
+		todos: make([]Item, 0),
 	}
 }
 
-func (svc *Service) AddTodo(todo string){
-	svc.todos = append(svc.todos, todo)
+func (svc *Service) AddTodo(todo string) error{
+	for _, t := range svc.todos{
+		if t.Task == todo{
+            return errors.New("todo already exists")
+		}
+	}
+	svc.todos = append(svc.todos, Item{Task: todo, Status: "pending"})
+	return nil
 }
 
-func (svc *Service) GetTodos() []string{
+func (svc *Service) GetTodos() []Item{
 	return svc.todos
 }
