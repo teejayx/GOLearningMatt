@@ -24,8 +24,13 @@ func NewServer(todoSvc *todo.Service) *Server {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
-
-		response, err := json.Marshal(todoSvc.GetTodos())
+        todoItems, err := todoSvc.GetAll()
+		if err != nil {
+			log.Println("Error retrieving todos:", err)
+			http.Error(w, "Error retrieving todos", http.StatusInternalServerError)
+			return
+		}
+		response, err := json.Marshal(todoItems)
 		if err != nil {
 			http.Error(w, "Error converting todos to JSON", http.StatusInternalServerError)
 			return
@@ -63,7 +68,13 @@ func NewServer(todoSvc *todo.Service) *Server {
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		results := todoSvc.SearchTodo(query)
+		results, err := todoSvc.SearchTodo(query)
+		if err != nil{
+			
+			log.Println(err)
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		b, err := json.Marshal(results)
 		if err != nil{
 			log.Println(err)
