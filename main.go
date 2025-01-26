@@ -11,7 +11,7 @@ import (
 
 func main() {
      
-	d, err :=  db.New("root","root", "ny_taxi","localhost", 5432)	
+	d, err :=  db.New("****","****", "ny_taxi","localhost", 5432)	
 	if err != nil{
 		log.Fatal(err)
 	}
